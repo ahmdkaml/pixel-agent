@@ -11,6 +11,7 @@ internal static class Program
 
         var form = new Form
         {
+            Icon = new Icon("icon.ico"),
             Text = "Pixel Agent",
             Width = 1000,
             Height = 700
