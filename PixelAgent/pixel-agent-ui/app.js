@@ -145,13 +145,31 @@ window.setDesignImage = function (base64OrUrl) {
     notice.classList.remove("hidden");
     img.classList.add("hidden");
     img.src = "";
+
+    document.getElementById("canvasStage").style.height = "";
     return;
   }
 
   notice.classList.add("hidden");
   img.classList.remove("hidden");
+
+  img.onload = () => {
+    resizeStageToDesign();
+  };
+
   img.src = base64OrUrl;
 };
+
+function resizeStageToDesign() {
+  const stage = document.getElementById("canvasStage");
+  const img = document.getElementById("designImage");
+
+  const width = stage.clientWidth;
+  const height = width * (img.naturalHeight / img.naturalWidth);
+
+  stage.style.height = `${height}px`;
+}
+
 
 /**
  * Injects rendered HTML + CSS into the live frame & updates code deck.
