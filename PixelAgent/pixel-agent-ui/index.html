@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Agent</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Application Bar -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="app-brand">
+        <span class="brand-dot"></span>
+        <span class="brand-title">PIXEL AGENT</span>
+      </div>
+      <button class="btn btn-secondary" id="btnOpenDesign" onclick="triggerOpenDesign()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Open Design
+      </button>
+      <button class="btn btn-primary" id="btnRunPipeline" onclick="triggerRunPipeline()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Run Pipeline
+      </button>
+    </div>
+
+    <!-- Center Mode Switcher -->
+    <div class="mode-switcher">
+      <button class="mode-btn" data-mode="design" onclick="setCanvasMode('design')">Design</button>
+      <button class="mode-btn active" data-mode="split" onclick="setCanvasMode('split')">Split Diff</button>
+      <button class="mode-btn" data-mode="render" onclick="setCanvasMode('render')">Web View</button>
+    </div>
+
+    <div class="header-right">
+      <div class="match-badge" id="matchBadge">--% MATCH</div>
+      <button class="btn btn-secondary" onclick="triggerExportZip()">Export ZIP</button>
+    </div>
+  </header>
+
+  <!-- Main Workspace Area -->
+  <div class="app-workspace">
+    <!-- Left Sidebar: Operations & Layers -->
+    <aside class="panel panel-left">
+      <section class="panel-section">
+        <div class="section-title">OPERATIONS</div>
+        <div class="ops-list" id="opsList">
+          <label class="op-item">
+            <input type="checkbox" id="op_canvas" checked onchange="notifyOpChange('canvas_detection', this.checked)">
+            <span>CanvasOp</span>
+          </label>
+          <label class="op-item">
+            <input type="checkbox" id="op_assets" checked onchange="notifyOpChange('asset_mapping', this.checked)">
+            <span>AssetMappingOp</span>
+          </label>
+          <label class="op-item">
+            <input type="checkbox" id="op_container" checked onchange="notifyOpChange('container_isolation', this.checked)">
+            <span>ContainerIsolationOp</span>
+          </label>
+          <label class="op-item">
+            <input type="checkbox" id="op_text" checked onchange="notifyOpChange('text_edge_detection', this.checked)">
+            <span>TextEdgeOp</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel-section flex-grow">
+        <div class="section-title">LAYERS</div>
+        <div class="layer-tree" id="layerTree">
+          <div class="empty-layers">No elements detected yet</div>
+        </div>
+      </section>
+    </aside>
+
+    <!-- Center Canvas Stage -->
+    <main class="canvas-viewport" id="canvasViewport">
+      <div class="canvas-stage" id="canvasStage">
+
+        <!-- Under Layer: Design Image Viewer -->
+        <div class="canvas-layer design-layer" id="designLayer">
+          <div class="empty-state" id="emptyDesignNotice">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <span class="empty-text">no design images</span>
+            <span class="empty-subtext">Click "Open Design" or load an image to begin</span>
+          </div>
+          <img id="designImage" class="stage-media hidden" alt="Source Design">
+        </div>
+
+        <!-- Top Layer: Live Rendered Output -->
+        <div class="canvas-layer render-layer" id="renderLayer">
+          <iframe id="renderFrame" class="stage-frame" src="about:blank"></iframe>
+        </div>
+
+        <!-- Draggable Split Diff Divider -->
+        <div class="split-slider" id="splitSlider">
+          <div class="slider-line"></div>
+          <div class="slider-handle">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar: Inspector & Overrides -->
+    <aside class="panel panel-right">
+      <div class="panel-section">
+        <div class="section-title">SELECTED TARGET</div>
+        <div class="target-chip" id="targetChip">None</div>
+      </div>
+
+      <div class="panel-section">
+        <div class="section-title">ACTIONS</div>
+        <div class="action-grid">
+          <button class="action-btn" onclick="applyAction('add_border')">+ Auto Border</button>
+          <button class="action-btn" onclick="applyAction('add_shadow')">+ Auto Shadow</button>
+          <button class="action-btn" onclick="applyAction('set_background')">+ Set BG Color</button>
+          <button class="action-btn" onclick="applyAction('extract_padding')">+ Auto Padding</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="section-title">GEOMETRY</div>
+        <div class="metrics-row">
+          <div class="metric-box">
+            <label>WIDTH</label>
+            <input type="text" id="propWidth" value="--" readonly>
+          </div>
+          <div class="metric-box">
+            <label>HEIGHT</label>
+            <input type="text" id="propHeight" value="--" readonly>
+          </div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-box">
+            <label>POS X</label>
+            <input type="text" id="propX" value="--" readonly>
+          </div>
+          <div class="metric-box">
+            <label>POS Y</label>
+            <input type="text" id="propY" value="--" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section flex-grow">
+        <div class="section-title">BOX STYLES</div>
+        <div class="styles-table">
+          <div class="style-row">
+            <span>background</span>
+            <input type="text" id="styleBg" placeholder="--">
+          </div>
+          <div class="style-row">
+            <span>border</span>
+            <input type="text" id="styleBorder" placeholder="--">
+          </div>
+          <div class="style-row">
+            <span>box-shadow</span>
+            <input type="text" id="styleShadow" placeholder="--">
+          </div>
+          <div class="style-row">
+            <span>border-radius</span>
+            <input type="text" id="styleRadius" placeholder="--">
+          </div>
+          <div class="style-row">
+            <span>padding</span>
+            <input type="text" id="stylePadding" placeholder="--">
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Bottom Collapsible Code Console -->
+  <footer class="code-drawer collapsed" id="codeDrawer">
+    <div class="drawer-header" onclick="toggleDrawer()">
+      <div class="drawer-title">
+        <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+        <span>CODE DECK</span>
+      </div>
+      <div class="drawer-tabs" onclick="event.stopPropagation()">
+        <button class="drawer-tab active" data-tab="html" onclick="switchCodeTab('html')">HTML</button>
+        <button class="drawer-tab" data-tab="css" onclick="switchCodeTab('css')">CSS</button>
+      </div>
+    </div>
+    <div class="drawer-content">
+      <pre class="code-block" id="htmlBlock"><code>&lt;!-- Run pipeline to generate HTML markup --&gt;</code></pre>
+      <pre class="code-block hidden" id="cssBlock"><code>/* Run pipeline to generate CSS stylesheets */</code></pre>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

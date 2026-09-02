@@ -30,14 +30,13 @@ internal static class Program
             {
                 await webView.EnsureCoreWebView2Async();
 
-                webView.NavigateToString("""
-                    <!DOCTYPE html>
-                    <html>
-                    <body>
-                        <h1>Hello World</h1>
-                    </body>
-                    </html>
-                    """);
+                var uiPath = Path.Combine(
+                    AppContext.BaseDirectory,
+                    "pixel-agent-ui",
+                    "index.html"
+                );
+
+                webView.Source = new Uri(uiPath);
             }
             catch (Exception ex)
             {
