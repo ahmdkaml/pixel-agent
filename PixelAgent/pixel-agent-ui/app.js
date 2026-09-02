@@ -29,27 +29,48 @@ function setCanvasMode(mode) {
 const stage = document.getElementById("canvasStage");
 const slider = document.getElementById("splitSlider");
 
-slider.addEventListener("mousedown", (e) => {
+slider.addEventListener("pointerdown", (e) => {
+  if (currentMode !== "split") return;
+
   isDragging = true;
+  slider.setPointerCapture(e.pointerId);
   document.body.style.cursor = "ew-resize";
 });
 
-window.addEventListener("mouseup", () => {
-  if (isDragging) {
-    isDragging = false;
-    document.body.style.cursor = "default";
-  }
-});
-
-window.addEventListener("mousemove", (e) => {
+slider.addEventListener("pointermove", (e) => {
   if (!isDragging || currentMode !== "split") return;
 
   const rect = stage.getBoundingClientRect();
   const offsetX = e.clientX - rect.left;
-  let pct = (offsetX / rect.width) * 100;
 
+  let pct = (offsetX / rect.width) * 100;
   pct = Math.max(0, Math.min(100, pct));
+
   updateSplitPosition(pct);
+});
+
+slider.addEventListener("pointerup", (e) => {
+  if (!isDragging) return;
+
+  isDragging = false;
+
+  if (slider.hasPointerCapture(e.pointerId)) {
+    slider.releasePointerCapture(e.pointerId);
+  }
+
+  document.body.style.cursor = "default";
+});
+
+slider.addEventListener("pointercancel", (e) => {
+  if (!isDragging) return;
+
+  isDragging = false;
+
+  if (slider.hasPointerCapture(e.pointerId)) {
+    slider.releasePointerCapture(e.pointerId);
+  }
+
+  document.body.style.cursor = "default";
 });
 
 function updateSplitPosition(pct) {
