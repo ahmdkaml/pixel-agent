@@ -164,17 +164,23 @@ window.setRenderedContent = function (htmlString, cssString, matchPercent = null
   doc.write(`
     <!DOCTYPE html>
     <html>
-      <head><style>${cssString}</style></head>
-      <body>${htmlString}</body>
+      <head>
+        <style>${cssString || ""}</style>
+      </head>
+      <body>${htmlString || ""}</body>
     </html>
   `);
   doc.close();
 
-  document.getElementById("htmlBlock").textContent = htmlString || "<!-- Empty -->";
-  document.getElementById("cssBlock").textContent = cssString || "/* Empty */";
+  document.getElementById("htmlBlock").textContent =
+    htmlString || "<!-- Empty -->";
+
+  document.getElementById("cssBlock").textContent =
+    cssString || "/* Empty */";
 
   if (matchPercent !== null) {
-    document.getElementById("matchBadge").innerText = `${matchPercent}% MATCH`;
+    document.getElementById("matchBadge").innerText =
+      `${matchPercent}% MATCH`;
   }
 };
 

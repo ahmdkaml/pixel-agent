@@ -1,6 +1,6 @@
 using Microsoft.Web.WebView2.WinForms;
 using PixelAgent.Services;
-
+using PixelAgent.Models;
 using PixelAgent.Host;
 
 namespace PixelAgent;
@@ -55,6 +55,14 @@ internal static class Program
                     MessageBoxIcon.Error
                 );
             }
+        };
+
+        var webPage = new WebPage();
+        var renderService = new RenderService();
+
+        webView.NavigationCompleted += async (_, _) =>
+        {
+            await renderService.RenderPage(webView, webPage);
         };
 
         Application.Run(form);
