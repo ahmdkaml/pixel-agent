@@ -1,5 +1,7 @@
 using Microsoft.Web.WebView2.WinForms;
 
+using PixelAgent.Host;
+
 namespace PixelAgent;
 
 internal static class Program
@@ -24,11 +26,15 @@ internal static class Program
 
         form.Controls.Add(webView);
 
-        form.Shown += async (_, _) =>
+        var host = new WebViewHost(webView);
+
+        form.Load += async (_, _) =>
         {
             try
             {
                 await webView.EnsureCoreWebView2Async();
+
+                host.Initialize();
 
                 var uiPath = Path.Combine(
                     AppContext.BaseDirectory,
