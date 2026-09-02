@@ -146,7 +146,7 @@ window.setDesignImage = function (base64OrUrl) {
     img.classList.add("hidden");
     img.src = "";
 
-    document.getElementById("canvasStage").style.height = "";
+    document.getElementById("canvasStage").style.height = "600px";
     return;
   }
 
@@ -170,6 +170,19 @@ function resizeStageToDesign() {
   stage.style.height = `${height}px`;
 }
 
+const canvasViewport = document.getElementById("canvasViewport");
+
+const canvasResizeObserver = new ResizeObserver(() => {
+  const img = document.getElementById("designImage");
+
+  if (!img.naturalWidth || !img.naturalHeight) {
+    return;
+  }
+
+  resizeStageToDesign();
+});
+
+canvasResizeObserver.observe(canvasViewport);
 
 /**
  * Injects rendered HTML + CSS into the live frame & updates code deck.
