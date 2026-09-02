@@ -1,4 +1,5 @@
 using Microsoft.Web.WebView2.WinForms;
+using PixelAgent.Services;
 
 using PixelAgent.Host;
 
@@ -26,7 +27,8 @@ internal static class Program
 
         form.Controls.Add(webView);
 
-        var host = new WebViewHost(webView);
+        var designService = new DesignImageService();
+        var host = new WebViewHost(webView, designService);
 
         form.Load += async (_, _) =>
         {
