@@ -6,13 +6,30 @@ namespace PixelAgent.Services;
 
 public class RenderService
 {
-    public async Task RenderPage(WebView2 webView, WebPage page)
+    private readonly WebView2 _webView;
+    private readonly WebPage _webPage;
+
+    public RenderService(WebView2 webView, WebPage webPage)
     {
-        var html = JsonSerializer.Serialize(page.Html);
-        var css = JsonSerializer.Serialize(page.Css);
+        _webView = webView;
+        _webPage = webPage;
+    }
+
+    public async Task RenderPage()
+    {
+        var html = JsonSerializer.Serialize(_webPage.Html);
+        var css = JsonSerializer.Serialize(_webPage.Css);
 
         var script = $"window.setRenderedContent({html}, {css});";
 
-        await webView.CoreWebView2.ExecuteScriptAsync(script);
+        await _webView.CoreWebView2.ExecuteScriptAsync(script);
+    }
+
+    public async Task UpdatePage(string html, string css)
+    {
+        _webPage.Html = html;
+        _webPage.Css = css;
+
+        await RenderPage();
     }
 }

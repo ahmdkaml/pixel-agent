@@ -12,10 +12,13 @@ public class WebViewHost
 
     private readonly DesignImageService _designService;
 
-    public WebViewHost(WebView2 webView, DesignImageService designService)
+    private readonly RenderService _renderService;
+
+    public WebViewHost(WebView2 webView, DesignImageService designService, RenderService renderService)
     {
         _webView = webView;
         _designService = designService;
+        _renderService = renderService;
     }
 
     public void Initialize()
@@ -47,6 +50,13 @@ public class WebViewHost
 
                     await _webView.CoreWebView2.ExecuteScriptAsync(script);
                 }
+
+                break;
+            case "code_changed":
+                var html = document.RootElement.GetProperty("html").GetString() ?? "";
+                var css = document.RootElement.GetProperty("css").GetString() ?? "";
+
+                await _renderService.UpdatePage(html, css);
 
                 break;
         }
