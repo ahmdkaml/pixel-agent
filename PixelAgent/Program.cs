@@ -31,8 +31,9 @@ internal static class Program
         var renderService = new RenderService(webView, webPage);
         var designService = new DesignImageService();
         var exportService = new ExportService(webPage);
+        var similarityService = new SimilarityService();
 
-        var app = new PixelAgentApp(designService, renderService, exportService);
+        var app = new PixelAgentApp(designService, renderService, exportService, similarityService, webPage);
 
         var host = new WebViewHost(webView, app);
 
