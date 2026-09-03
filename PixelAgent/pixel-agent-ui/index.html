@@ -180,6 +180,7 @@
 
   <!-- Bottom Collapsible Code Console -->
   <footer class="code-drawer collapsed" id="codeDrawer">
+    <div class="code-resize-handle" id="codeResizeHandle"></div>
     <div class="drawer-header" onclick="toggleDrawer()">
       <div class="drawer-title">
         <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -193,9 +194,20 @@
       </div>
     </div>
     <div class="drawer-content">
-      <pre class="code-block" id="htmlBlock"><code>&lt;!-- Run pipeline to generate HTML markup --&gt;</code></pre>
-      <pre class="code-block hidden" id="cssBlock"><code>/* Run pipeline to generate CSS stylesheets */</code></pre>
-    </div>
+    <textarea
+      class="code-block"
+      id="htmlBlock"
+      spellcheck="false"
+      aria-label="HTML editor"
+    ><!-- Run pipeline to generate HTML markup --></textarea>
+
+    <textarea
+      class="code-block hidden"
+      id="cssBlock"
+      spellcheck="false"
+      aria-label="CSS editor"
+    >/* Run pipeline to generate CSS stylesheets */</textarea>
+  </div>
   </footer>
 
   <script src="app.js"></script>
