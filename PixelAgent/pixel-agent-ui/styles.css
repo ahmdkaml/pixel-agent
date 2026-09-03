@@ -421,6 +421,7 @@ body {
   background-color: var(--bg-panel);
   border-top: 1px solid var(--border-color);
   display: flex;
+  position: relative;
   flex-direction: column;
   height: 200px;
   transition: height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -486,10 +487,32 @@ body {
 }
 
 .code-block {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #bae6fd;
   font-family: var(--font-mono);
   font-size: 11px;
   line-height: 1.5;
-  color: #bae6fd;
+  user-select: text;
+  white-space: pre;
+}
+
+.code-resize-handle {
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  cursor: ns-resize;
+  z-index: 21;
+}
+
+.code-resize-handle:hover {
+  background-color: var(--border-focus);
 }
 
 .hidden { display: none !important; }

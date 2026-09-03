@@ -203,10 +203,10 @@ window.setRenderedContent = function (htmlString, cssString, matchPercent = null
   `);
   doc.close();
 
-  document.getElementById("htmlBlock").textContent =
+  document.getElementById("htmlBlock").value =
     htmlString || "<!-- Empty -->";
 
-  document.getElementById("cssBlock").textContent =
+  document.getElementById("cssBlock").value =
     cssString || "/* Empty */";
 
   if (matchPercent !== null) {
@@ -253,3 +253,59 @@ function selectElement(el) {
     node.classList.toggle("active", node.innerText.includes(el.id));
   });
 }
+
+
+// Code Deck Resize
+const codeDrawer = document.getElementById("codeDrawer");
+const codeResizeHandle = document.getElementById("codeResizeHandle");
+
+let isResizingCodeDeck = false;
+
+codeResizeHandle.addEventListener("pointerdown", (e) => {
+  isResizingCodeDeck = true;
+
+  codeResizeHandle.setPointerCapture(e.pointerId);
+
+  codeDrawer.style.transition = "none";
+  document.body.style.cursor = "ns-resize";
+});
+
+codeResizeHandle.addEventListener("pointermove", (e) => {
+  if (!isResizingCodeDeck) return;
+
+  const maxHeight = window.innerHeight - 48 - 120;
+  const height = window.innerHeight - e.clientY;
+
+  const clampedHeight = Math.max(
+    120,
+    Math.min(maxHeight, height)
+  );
+
+  codeDrawer.style.height = `${clampedHeight}px`;
+});
+
+codeResizeHandle.addEventListener("pointerup", (e) => {
+  if (!isResizingCodeDeck) return;
+
+  isResizingCodeDeck = false;
+
+  if (codeResizeHandle.hasPointerCapture(e.pointerId)) {
+    codeResizeHandle.releasePointerCapture(e.pointerId);
+  }
+
+  codeDrawer.style.transition = "";
+  document.body.style.cursor = "default";
+});
+
+codeResizeHandle.addEventListener("pointercancel", (e) => {
+  if (!isResizingCodeDeck) return;
+
+  isResizingCodeDeck = false;
+
+  if (codeResizeHandle.hasPointerCapture(e.pointerId)) {
+    codeResizeHandle.releasePointerCapture(e.pointerId);
+  }
+
+  codeDrawer.style.transition = "";
+  document.body.style.cursor = "default";
+});
