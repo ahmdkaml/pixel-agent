@@ -38,7 +38,7 @@ public class WebViewHost
         {
             case "open_design_dialog":
 
-                var imageData = _app._designService.OpenDesignDialog();
+                var imageData = _app.OpenDesignDialog();
 
                 if (imageData != null)
                 {
@@ -50,7 +50,7 @@ public class WebViewHost
 
             case "load_images":
 
-                var images = _app._designService.LoadImages();
+                var images = _app.LoadImages();
 
                 if (images != null)
                 {
@@ -63,11 +63,11 @@ public class WebViewHost
                 var html = document.RootElement.GetProperty("html").GetString() ?? "";
                 var css = document.RootElement.GetProperty("css").GetString() ?? "";
 
-                await _app._renderService.UpdatePage(html, css);
+                await _app.UpdatePage(html, css);
 
                 break;
             case "export_app":
-                _app._exportService.ExportApp();
+                _app.ExportApp();
                 break;
         }
     }
