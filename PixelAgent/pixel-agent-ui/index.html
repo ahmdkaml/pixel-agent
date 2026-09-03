@@ -15,11 +15,17 @@
         <span class="brand-title">PIXEL AGENT</span>
       </div>
       <button class="btn btn-secondary" id="btnOpenDesign" onclick="triggerOpenDesign()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
         Open Design
       </button>
       <button class="btn btn-primary" id="btnRunPipeline" onclick="triggerRunPipeline()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
         Run Pipeline
       </button>
     </div>
@@ -71,11 +77,10 @@
       </section>
     </aside>
 
-    <!-- Center Canvas Stage -->
+    <!-- Center Canvas Viewport -->
     <main class="canvas-viewport" id="canvasViewport">
       <div class="canvas-stage" id="canvasStage">
-
-        <!-- Under Layer: Design Image Viewer -->
+        <!-- Bottom Layer: Design Image -->
         <div class="canvas-layer design-layer" id="designLayer">
           <div class="empty-state" id="emptyDesignNotice">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5">
@@ -91,7 +96,7 @@
 
         <!-- Top Layer: Live Rendered Output -->
         <div class="canvas-layer render-layer" id="renderLayer">
-          <iframe id="renderFrame" class="stage-frame" src="about:blank"></iframe>
+          <iframe id="renderFrame" class="stage-frame" src="about:blank" sandbox="allow-scripts allow-same-origin"></iframe>
         </div>
 
         <!-- Draggable Split Diff Divider -->
@@ -180,7 +185,6 @@
 
   <!-- Bottom Collapsible Code Console -->
   <footer class="code-drawer collapsed" id="codeDrawer">
-    <div class="code-resize-handle" id="codeResizeHandle"></div>
     <div class="drawer-header" onclick="toggleDrawer()">
       <div class="drawer-title">
         <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -194,20 +198,9 @@
       </div>
     </div>
     <div class="drawer-content">
-    <textarea
-      class="code-block"
-      id="htmlBlock"
-      spellcheck="false"
-      aria-label="HTML editor"
-    ><!-- Run pipeline to generate HTML markup --></textarea>
-
-    <textarea
-      class="code-block hidden"
-      id="cssBlock"
-      spellcheck="false"
-      aria-label="CSS editor"
-    >/* Run pipeline to generate CSS stylesheets */</textarea>
-  </div>
+      <pre class="code-block" id="htmlBlock" contenteditable="true" spellcheck="false">&lt;!-- Run pipeline to generate HTML markup --&gt;</pre>
+      <pre class="code-block hidden" id="cssBlock" contenteditable="true" spellcheck="false">/* Run pipeline to generate CSS stylesheets */</pre>
+    </div>
   </footer>
 
   <script src="app.js"></script>
