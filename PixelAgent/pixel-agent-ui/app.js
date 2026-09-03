@@ -309,3 +309,19 @@ codeResizeHandle.addEventListener("pointercancel", (e) => {
   codeDrawer.style.transition = "";
   document.body.style.cursor = "default";
 });
+
+let codeChangeTimeout;
+
+function notifyCodeChange() {
+  clearTimeout(codeChangeTimeout);
+
+  codeChangeTimeout = setTimeout(() => {
+    const html = document.getElementById("htmlBlock").value;
+    const css = document.getElementById("cssBlock").value;
+
+    postToHost("code_changed", { html, css });
+  }, 300);
+}
+
+document.getElementById("htmlBlock").addEventListener("input", notifyCodeChange);
+document.getElementById("cssBlock").addEventListener("input", notifyCodeChange);

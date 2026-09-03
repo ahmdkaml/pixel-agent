@@ -27,8 +27,11 @@ internal static class Program
 
         form.Controls.Add(webView);
 
+        var webPage = new WebPage();
+        var renderService = new RenderService(webView, webPage);
+
         var designService = new DesignImageService();
-        var host = new WebViewHost(webView, designService);
+        var host = new WebViewHost(webView, designService, renderService);
 
         form.Load += async (_, _) =>
         {
@@ -57,12 +60,9 @@ internal static class Program
             }
         };
 
-        var webPage = new WebPage();
-        var renderService = new RenderService();
-
         webView.NavigationCompleted += async (_, _) =>
         {
-            await renderService.RenderPage(webView, webPage);
+            await renderService.RenderPage();
         };
 
         Application.Run(form);
