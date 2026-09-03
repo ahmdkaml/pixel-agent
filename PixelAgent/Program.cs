@@ -29,9 +29,12 @@ internal static class Program
 
         var webPage = new WebPage();
         var renderService = new RenderService(webView, webPage);
-
         var designService = new DesignImageService();
-        var host = new WebViewHost(webView, designService, renderService);
+        var exportService = new ExportService(webPage);
+
+        var app = new PixelAgentApp(designService, renderService, exportService);
+
+        var host = new WebViewHost(webView, app);
 
         form.Load += async (_, _) =>
         {

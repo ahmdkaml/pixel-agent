@@ -183,8 +183,7 @@ function handleCodeInput() {
     const rawHtml = htmlBlock.innerText;
     const rawCss = cssBlock.innerText;
 
-    syncLiveFrame(rawHtml, rawCss);
-    postToHost("code_edited", { html: rawHtml, css: rawCss });
+    postToHost("code_changed", { html: rawHtml, css: rawCss });
   }, 150);
 }
 
@@ -202,7 +201,7 @@ function postToHost(action, payload = {}) {
 
 function triggerOpenDesign() { postToHost("open_design_dialog"); }
 function triggerRunPipeline() { postToHost("run_pipeline"); }
-function triggerExportZip() { postToHost("export_zip"); }
+function triggerExport() { postToHost("export_app"); }
 function triggerLoadImages() { postToHost("load_images"); }
 function notifyOpChange(opName, isEnabled) { postToHost("toggle_op", { opName, isEnabled }); }
 

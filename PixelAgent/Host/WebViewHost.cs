@@ -9,16 +9,12 @@ namespace PixelAgent.Host;
 public class WebViewHost
 {
     private readonly WebView2 _webView;
+    private readonly PixelAgentApp _app;
 
-    private readonly DesignImageService _designService;
-
-    private readonly RenderService _renderService;
-
-    public WebViewHost(WebView2 webView, DesignImageService designService, RenderService renderService)
+    public WebViewHost(WebView2 webView, PixelAgentApp app)
     {
         _webView = webView;
-        _designService = designService;
-        _renderService = renderService;
+        _app = app;
     }
 
     public void Initialize()
@@ -42,7 +38,7 @@ public class WebViewHost
         {
             case "open_design_dialog":
 
-                var imageData = _designService.OpenDesignDialog();
+                var imageData = _app._designService.OpenDesignDialog();
 
                 if (imageData != null)
                 {
@@ -54,7 +50,7 @@ public class WebViewHost
 
             case "load_images":
 
-                var images = _designService.LoadImages();
+                var images = _app._designService.LoadImages();
 
                 if (images != null)
                 {
@@ -67,8 +63,11 @@ public class WebViewHost
                 var html = document.RootElement.GetProperty("html").GetString() ?? "";
                 var css = document.RootElement.GetProperty("css").GetString() ?? "";
 
-                await _renderService.UpdatePage(html, css);
+                await _app._renderService.UpdatePage(html, css);
 
+                break;
+            case "export_app":
+                _app._exportService.ExportApp();
                 break;
         }
     }
