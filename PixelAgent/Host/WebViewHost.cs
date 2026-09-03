@@ -50,8 +50,19 @@ public class WebViewHost
 
                     await _webView.CoreWebView2.ExecuteScriptAsync(script);
                 }
-
                 break;
+
+            case "load_images":
+
+                var images = _designService.LoadImages();
+
+                if (images != null)
+                {
+                    var script = $"window.addImages({JsonSerializer.Serialize(images)});";
+                    await _webView.CoreWebView2.ExecuteScriptAsync(script);
+                }
+                break;
+
             case "code_changed":
                 var html = document.RootElement.GetProperty("html").GetString() ?? "";
                 var css = document.RootElement.GetProperty("css").GetString() ?? "";

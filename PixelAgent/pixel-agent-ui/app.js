@@ -4,6 +4,7 @@ let isDragging = false;
 let designDimensions = { width: 0, height: 0 };
 let editDebounceTimer = null;
 const elementsCache = new Map();
+const loadedImages = new Map();
 
 // 1. Dynamic Scaling Engine
 function updateStageDimensions() {
@@ -138,6 +139,9 @@ const cssBlock = document.getElementById("cssBlock");
 
 function syncLiveFrame(rawHtml, rawCss) {
   const iframe = document.getElementById("renderFrame");
+
+  const html = resolveImageReferences(rawHtml);
+
   iframe.srcdoc = `
     <!DOCTYPE html>
     <html>
@@ -149,9 +153,28 @@ function syncLiveFrame(rawHtml, rawCss) {
           ${rawCss || ""}
         </style>
       </head>
-      <body>${rawHtml || ""}</body>
+      <body>${html || ""}</body>
     </html>
   `;
+}
+
+function resolveImageReferences(html) {
+  if (!html) {
+    return html;
+  }
+
+  return html.replace(
+    /(<img\b[^>]*\bsrc=["'])([^"']+)(["'][^>]*>)/gi,
+    (match, prefix, src, suffix) => {
+      const image = loadedImages.get(src);
+
+      if (!image) {
+        return match;
+      }
+
+      return `${prefix}${image}${suffix}`;
+    }
+  );
 }
 
 function handleCodeInput() {
@@ -180,6 +203,7 @@ function postToHost(action, payload = {}) {
 function triggerOpenDesign() { postToHost("open_design_dialog"); }
 function triggerRunPipeline() { postToHost("run_pipeline"); }
 function triggerExportZip() { postToHost("export_zip"); }
+function triggerLoadImages() { postToHost("load_images"); }
 function notifyOpChange(opName, isEnabled) { postToHost("toggle_op", { opName, isEnabled }); }
 
 function applyAction(actionType) {
@@ -237,6 +261,22 @@ window.setRenderedContent = function (htmlString, cssString, matchPercent = null
   if (matchPercent !== null) {
     document.getElementById("matchBadge").innerText = `${matchPercent}% MATCH`;
   }
+};
+
+window.addImages = function (images) {
+  const container = document.getElementById("imageList");
+
+  images.forEach((image) => {
+    loadedImages.set(image.Name, image.Data);
+
+    const item = document.createElement("div");
+    item.className = "asset-item";
+    item.innerText = image.Name;
+
+    container.appendChild(item);
+  });
+
+  document.getElementById("assetCount").innerText = loadedImages.size;
 };
 
 // 8. Layer Tree & Inspector Binding

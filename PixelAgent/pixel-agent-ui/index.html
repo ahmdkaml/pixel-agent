@@ -69,6 +69,25 @@
         </div>
       </section>
 
+      <!-- NEW: Assets Section -->
+<section class="panel-section">
+  <div class="section-title">
+    <span>ASSETS</span>
+    <span class="asset-count" id="assetCount">0</span>
+  </div>
+
+  <button class="btn btn-secondary w-full" id="btnLoadImages" onclick="triggerLoadImages()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <circle cx="8.5" cy="8.5" r="1.5"/>
+      <polyline points="21 15 16 10 5 21"/>
+    </svg>
+    Load Images
+  </button>
+
+  <div class="asset-list" id="imageList"></div>
+</section>
+
       <section class="panel-section flex-grow">
         <div class="section-title">LAYERS</div>
         <div class="layer-tree" id="layerTree">
