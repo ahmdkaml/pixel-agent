@@ -2,9 +2,13 @@ using Microsoft.Playwright;
 
 namespace PixelAgent.Services;
 
-public class PlaywrightScreenshotService
-    : IRenderedScreenshotService
+public class PlaywrightScreenshotService : IRenderedScreenshotService
 {
+    public Task<string> Capture(string html, int width, int height)
+    {
+        return Capture(html, string.Empty, width, height);
+    }
+
     public async Task<string> Capture(string html, string css, int width, int height)
     {
         var viewportWidth = Math.Max(1, width);
@@ -30,21 +34,22 @@ public class PlaywrightScreenshotService
             }
         );
 
-        var content = $"""
-            <!DOCTYPE html>
-            <html>
-              <head>
-                <meta charset="utf-8">
-                <style>
-                  *, *::before, *::after {{ box-sizing: border-box; }}
-                  body {{ margin: 0; padding: 0; }}
-                  {css}
-                </style>
-              </head>
-              <body>{html}</body>
-            </html>
-            """;
-
+        var content = string.IsNullOrWhiteSpace(css)
+    ? html
+    : $$"""
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            *, *::before, *::after { box-sizing: border-box; }
+            body { margin: 0; padding: 0; }
+            {{css}}
+          </style>
+        </head>
+        <body>{{html}}</body>
+      </html>
+      """;
         await page.SetContentAsync(content);
 
         var bytes = await page.ScreenshotAsync(
@@ -54,6 +59,8 @@ public class PlaywrightScreenshotService
                 FullPage = false
             }
         );
+
+        await page.CloseAsync();
 
         return $"data:image/png;base64,{Convert.ToBase64String(bytes)}";
     }

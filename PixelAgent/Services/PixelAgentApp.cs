@@ -14,7 +14,7 @@ public class PixelAgentApp
     private readonly PlaywrightScreenshotService _playwrightScreenshotService;
     private readonly SimilarityService _similarityService;
 
-    public WebPage WebPage { get; } = new WebPage();
+    public WebPage WebPage { get; }
 
     private CancellationTokenSource? _similarityDebounce;
 
@@ -65,15 +65,11 @@ public class PixelAgentApp
         _ = CalculateSimilarityAfterDelay(_similarityDebounce.Token);
     }
 
-    private async Task CalculateSimilarityAfterDelay(
-        CancellationToken cancellationToken)
+    private async Task CalculateSimilarityAfterDelay(CancellationToken cancellationToken)
     {
         try
         {
-            await Task.Delay(
-                TimeSpan.FromSeconds(5),
-                cancellationToken
-            );
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
 
             if (Design == null)
             {
