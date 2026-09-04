@@ -67,6 +67,24 @@ public class WebViewHost
 
                 _app.DetectTexts();
                 break;
+            case "detect_edges":
+
+                _app.DetectEdges();
+                break;
+
+            case "detect_elements":
+                var image = _app.DetectElements();
+
+                if (image != null)
+                {
+                    var script = $"window.setDesignImage({JsonSerializer.Serialize(image)});";
+                    await _webView.CoreWebView2.ExecuteScriptAsync(script);
+                }
+                break;
+
+            case "color_background":
+                await _app.ColorBackground();
+                break;
 
             case "code_changed":
                 var html = document.RootElement.GetProperty("html").GetString() ?? "";

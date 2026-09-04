@@ -38,6 +38,9 @@ internal static class Program
         var similarityService = new SimilarityService();
         var detectionService = new ImageDetectionService();
         var textDetectionService = new TextDetectionService();
+        var edgeDetectionService = new EdgeDetectionService();
+        var elementDetectionService = new ElementDetectionService();
+        var styleDetectionService = new StyleDetectionService();
 
         var state = new PixelAgentState(
             webPage,
@@ -51,7 +54,10 @@ internal static class Program
             exportService,
             similarityService,
             detectionService,
-            textDetectionService);
+            textDetectionService,
+            edgeDetectionService,
+            elementDetectionService,
+            styleDetectionService);
 
         var app = new PixelAgentApp(services, state);
 
