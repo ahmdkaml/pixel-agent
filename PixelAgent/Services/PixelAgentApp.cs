@@ -17,6 +17,8 @@ public class PixelAgentApp
 
     public WebDesign WebDesign { get; }
 
+    public WebAssets WebAssets { get; }
+
     private CancellationTokenSource? _similarityDebounce;
 
     public event EventHandler? SimilarityChanged;
@@ -28,7 +30,8 @@ public class PixelAgentApp
         ExportService exportService,
         SimilarityService similarityService,
         WebPage webPage,
-        WebDesign webDesign)
+        WebDesign webDesign,
+        WebAssets webAssets)
     {
         _designService = designService;
         _renderService = renderService;
@@ -37,6 +40,7 @@ public class PixelAgentApp
         _similarityService = similarityService;
         WebPage = webPage;
         WebDesign = webDesign;
+        WebAssets = webAssets;
     }
 
     public string? OpenDesignDialog()
@@ -53,7 +57,14 @@ public class PixelAgentApp
 
     public List<object>? LoadImages()
     {
-        return _designService.LoadImages();
+        var images = _designService.LoadImages();
+
+        if (images != null)
+        {
+            WebAssets.Images = images;
+        }
+
+        return WebAssets.Images;
     }
 
     public async Task UpdatePage(string html, string css)
