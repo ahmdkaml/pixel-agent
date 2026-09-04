@@ -9,6 +9,10 @@ public class PixelAgentServices
     public SimilarityService Similarity { get; }
     public ImageDetectionService Detection { get; }
     public TextDetectionService TextDetection { get; }
+    public EdgeDetectionService EdgeDetection { get; } = new EdgeDetectionService();
+    public ElementDetectionService ElementDetection { get; } = new ElementDetectionService();
+
+    public StyleDetectionService StyleDetection { get; } = new StyleDetectionService();
 
     public PixelAgentServices(
         DesignImageService design,
@@ -17,7 +21,10 @@ public class PixelAgentServices
         ExportService export,
         SimilarityService similarity,
         ImageDetectionService detection,
-        TextDetectionService textDetection)
+        TextDetectionService textDetection,
+        EdgeDetectionService edgeDetection,
+        ElementDetectionService elementDetection,
+        StyleDetectionService styleDetection)
     {
         Design = design;
         Render = render;
@@ -26,5 +33,8 @@ public class PixelAgentServices
         Similarity = similarity;
         Detection = detection;
         TextDetection = textDetection;
+        EdgeDetection = edgeDetection;
+        ElementDetection = elementDetection;
+        StyleDetection = styleDetection;
     }
 }
