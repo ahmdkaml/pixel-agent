@@ -63,6 +63,10 @@ public class WebViewHost
 
                 _app.DetectImages();
                 break;
+            case "detect_texts":
+
+                _app.DetectTexts();
+                break;
 
             case "code_changed":
                 var html = document.RootElement.GetProperty("html").GetString() ?? "";

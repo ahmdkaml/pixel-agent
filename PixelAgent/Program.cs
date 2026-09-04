@@ -37,6 +37,7 @@ internal static class Program
         var exportService = new ExportService(webPage);
         var similarityService = new SimilarityService();
         var detectionService = new ImageDetectionService();
+        var textDetectionService = new TextDetectionService();
 
         var state = new PixelAgentState(
             webPage,
@@ -49,7 +50,8 @@ internal static class Program
             screenshotService,
             exportService,
             similarityService,
-            detectionService);
+            detectionService,
+            textDetectionService);
 
         var app = new PixelAgentApp(services, state);
 

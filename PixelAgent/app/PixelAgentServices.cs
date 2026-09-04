@@ -8,6 +8,7 @@ public class PixelAgentServices
     public ExportService Export { get; }
     public SimilarityService Similarity { get; }
     public ImageDetectionService Detection { get; }
+    public TextDetectionService TextDetection { get; }
 
     public PixelAgentServices(
         DesignImageService design,
@@ -15,7 +16,8 @@ public class PixelAgentServices
         PlaywrightScreenshotService screenshot,
         ExportService export,
         SimilarityService similarity,
-        ImageDetectionService detection)
+        ImageDetectionService detection,
+        TextDetectionService textDetection)
     {
         Design = design;
         Render = render;
@@ -23,5 +25,6 @@ public class PixelAgentServices
         Export = export;
         Similarity = similarity;
         Detection = detection;
+        TextDetection = textDetection;
     }
 }
