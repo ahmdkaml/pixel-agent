@@ -90,6 +90,19 @@ public class PixelAgentApp
         }
     }
 
+    public void DetectImages()
+    {
+        var detected = _services.Detection.Detect(
+            _state.WebDesign.Design ?? string.Empty,
+            _state.WebAssets.Images);
+
+        // MessageBox.Show(
+        //         string.Join(
+        //             Environment.NewLine,
+        //             detected.Select(d =>
+        //                 $"{d.Name} — X: {d.X}, Y: {d.Y}, Width: {d.Width}, Height: {d.Height}")));
+    }
+
     public void ExportApp()
     {
         _services.Export.ExportApp();

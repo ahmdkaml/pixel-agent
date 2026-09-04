@@ -36,6 +36,7 @@ internal static class Program
         var screenshotService = new PlaywrightScreenshotService();
         var exportService = new ExportService(webPage);
         var similarityService = new SimilarityService();
+        var detectionService = new ImageDetectionService();
 
         var state = new PixelAgentState(
             webPage,
@@ -47,7 +48,8 @@ internal static class Program
             renderService,
             screenshotService,
             exportService,
-            similarityService);
+            similarityService,
+            detectionService);
 
         var app = new PixelAgentApp(services, state);
 
