@@ -27,6 +27,7 @@ internal static class Program
 
         form.Controls.Add(webView);
 
+        var webAssets = new WebAssets();
         var webPage = new WebPage();
         var webDesign = new WebDesign();
         var renderService = new RenderService(webView, webPage);
@@ -42,7 +43,8 @@ internal static class Program
             exportService,
             similarityService,
             webPage,
-            webDesign
+            webDesign,
+            webAssets
         );
 
         var host = new WebViewHost(webView, app);
