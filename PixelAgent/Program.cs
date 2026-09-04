@@ -27,25 +27,29 @@ internal static class Program
 
         form.Controls.Add(webView);
 
-        var webAssets = new WebAssets();
         var webPage = new WebPage();
         var webDesign = new WebDesign();
+        var webAssets = new WebAssets();
+
         var renderService = new RenderService(webView, webPage);
-        var playwrightScreenshotService = new PlaywrightScreenshotService();
         var designService = new DesignImageService();
+        var screenshotService = new PlaywrightScreenshotService();
         var exportService = new ExportService(webPage);
         var similarityService = new SimilarityService();
 
-        var app = new PixelAgentApp(
-            designService,
-            renderService,
-            playwrightScreenshotService,
-            exportService,
-            similarityService,
+        var state = new PixelAgentState(
             webPage,
             webDesign,
-            webAssets
-        );
+            webAssets);
+
+        var services = new PixelAgentServices(
+            designService,
+            renderService,
+            screenshotService,
+            exportService,
+            similarityService);
+
+        var app = new PixelAgentApp(services, state);
 
         var host = new WebViewHost(webView, app);
 
