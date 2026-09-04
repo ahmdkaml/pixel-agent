@@ -204,6 +204,7 @@ function triggerRunPipeline() { postToHost("run_pipeline"); }
 function triggerExport() { postToHost("export_app"); }
 function triggerLoadImages() { postToHost("load_images"); }
 function triggerDetectImages() { postToHost("detect_images"); }
+function triggerDetectTexts() { postToHost("detect_texts"); }
 
 function notifyOpChange(opName, isEnabled) { postToHost("toggle_op", { opName, isEnabled }); }
 

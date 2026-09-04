@@ -96,11 +96,18 @@ public class PixelAgentApp
             _state.WebDesign.Design ?? string.Empty,
             _state.WebAssets.Images);
 
-        // MessageBox.Show(
-        //         string.Join(
-        //             Environment.NewLine,
-        //             detected.Select(d =>
-        //                 $"{d.Name} — X: {d.X}, Y: {d.Y}, Width: {d.Width}, Height: {d.Height}")));
+    }
+
+    public void DetectTexts()
+    {
+        var detected = _services.TextDetection.Detect(
+            _state.WebDesign.Design ?? string.Empty);
+
+        MessageBox.Show(
+    string.Join(
+        Environment.NewLine,
+        detected.Select(d =>
+            $"{d.Text} — X: {d.X}, Y: {d.Y}, W: {d.Width}, H: {d.Height}")));
     }
 
     public void ExportApp()
