@@ -11,9 +11,10 @@ public class PixelAgentApp
     private readonly ExportService _exportService;
     private readonly DesignImageService _designService;
     private readonly RenderService _renderService;
+    private readonly PlaywrightScreenshotService _playwrightScreenshotService;
     private readonly SimilarityService _similarityService;
 
-    public WebPage WebPage { get; } = new WebPage();
+    public WebPage WebPage { get; }
 
     private CancellationTokenSource? _similarityDebounce;
 
@@ -22,12 +23,14 @@ public class PixelAgentApp
     public PixelAgentApp(
         DesignImageService designService,
         RenderService renderService,
+        PlaywrightScreenshotService playwrightScreenshotService,
         ExportService exportService,
         SimilarityService similarityService,
         WebPage webPage)
     {
         _designService = designService;
         _renderService = renderService;
+        _playwrightScreenshotService = playwrightScreenshotService;
         _exportService = exportService;
         _similarityService = similarityService;
         WebPage = webPage;
@@ -62,25 +65,27 @@ public class PixelAgentApp
         _ = CalculateSimilarityAfterDelay(_similarityDebounce.Token);
     }
 
-    private async Task CalculateSimilarityAfterDelay(
-        CancellationToken cancellationToken)
+    private async Task CalculateSimilarityAfterDelay(CancellationToken cancellationToken)
     {
         try
         {
-            await Task.Delay(
-                TimeSpan.FromSeconds(5),
-                cancellationToken
-            );
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
 
             if (Design == null)
             {
                 return;
             }
 
+            var renderedSnapshot = await _renderService.CaptureSnapshot();
+            var renderedImage = await _playwrightScreenshotService.Capture(
+                renderedSnapshot.Srcdoc,
+                renderedSnapshot.Width,
+                renderedSnapshot.Height
+            );
+
             Similarity = await _similarityService.Calculate(
                 Design,
-                WebPage.Html,
-                WebPage.Css
+                renderedImage
             );
 
             SimilarityChanged?.Invoke(this, EventArgs.Empty);
