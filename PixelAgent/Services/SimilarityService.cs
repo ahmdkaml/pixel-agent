@@ -1,6 +1,7 @@
 namespace PixelAgent.Services;
 
 public class SimilarityService
+    : IImageSimilarityService
 {
     public Task<double> Calculate(
         string design,
