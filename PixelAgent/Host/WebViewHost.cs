@@ -59,6 +59,11 @@ public class WebViewHost
                 }
                 break;
 
+            case "detect_images":
+
+                // Call the DetectImages method in PixelAgentApp
+                break;
+
             case "code_changed":
                 var html = document.RootElement.GetProperty("html").GetString() ?? "";
                 var css = document.RootElement.GetProperty("css").GetString() ?? "";
