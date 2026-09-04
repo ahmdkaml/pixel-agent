@@ -61,7 +61,7 @@ public class WebViewHost
 
             case "detect_images":
 
-                // Call the DetectImages method in PixelAgentApp
+                _app.DetectImages();
                 break;
 
             case "code_changed":
