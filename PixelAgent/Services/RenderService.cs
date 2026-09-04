@@ -8,6 +8,10 @@ public class RenderService
 {
     private readonly WebView2 _webView;
     private readonly WebPage _webPage;
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     public RenderService(WebView2 webView, WebPage webPage)
     {
@@ -32,4 +36,32 @@ public class RenderService
 
         await RenderPage();
     }
+
+    public async Task<RenderSnapshot> CaptureSnapshot()
+    {
+        var script = """
+            (() => {
+              const frame = document.getElementById("renderFrame");
+              if (!frame) {
+                return { srcdoc: "", width: 1, height: 1 };
+              }
+            
+              const width = Math.max(1, frame.offsetWidth || frame.clientWidth || 1);
+              const height = Math.max(1, frame.offsetHeight || frame.clientHeight || 1);
+            
+              return {
+                srcdoc: frame.srcdoc || "",
+                width,
+                height
+              };
+            })();
+            """;
+
+        var json = await _webView.CoreWebView2.ExecuteScriptAsync(script);
+        var snapshot = JsonSerializer.Deserialize<RenderSnapshot>(json, JsonOptions);
+
+        return snapshot ?? new RenderSnapshot("", 1, 1);
+    }
 }
+
+public sealed record RenderSnapshot(string Srcdoc, int Width, int Height);

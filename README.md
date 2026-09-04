@@ -28,6 +28,8 @@ Pixel Agent is a Windows desktop application built with:
 
 WebView2 provides the browser rendering environment used by Pixel Agent, allowing HTML and CSS to be rendered using the Chromium-based Microsoft Edge rendering engine.
 
+For visual comparison, Pixel Agent keeps the design image as the reference and captures the rendered implementation as a PNG using Playwright with a deterministic viewport that matches the render iframe dimensions.
+
 ## 🚧 Project Status
 
 Pixel Agent is currently in early development.
@@ -60,4 +62,3 @@ pixel-agent/
 ├── scripts/        # Development utilities
 └── tests/          # Tests
 ```
-
