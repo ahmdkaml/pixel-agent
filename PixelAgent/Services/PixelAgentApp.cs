@@ -4,7 +4,6 @@ namespace PixelAgent.Services;
 
 public class PixelAgentApp
 {
-    public string? Design { get; private set; }
 
     public double Similarity { get; private set; }
 
@@ -16,6 +15,8 @@ public class PixelAgentApp
 
     public WebPage WebPage { get; }
 
+    public WebDesign WebDesign { get; }
+
     private CancellationTokenSource? _similarityDebounce;
 
     public event EventHandler? SimilarityChanged;
@@ -26,7 +27,8 @@ public class PixelAgentApp
         PlaywrightScreenshotService playwrightScreenshotService,
         ExportService exportService,
         SimilarityService similarityService,
-        WebPage webPage)
+        WebPage webPage,
+        WebDesign webDesign)
     {
         _designService = designService;
         _renderService = renderService;
@@ -34,6 +36,7 @@ public class PixelAgentApp
         _exportService = exportService;
         _similarityService = similarityService;
         WebPage = webPage;
+        WebDesign = webDesign;
     }
 
     public string? OpenDesignDialog()
@@ -42,10 +45,10 @@ public class PixelAgentApp
 
         if (imageData != null)
         {
-            Design = imageData;
+            WebDesign.Design = imageData;
         }
 
-        return imageData;
+        return WebDesign.Design;
     }
 
     public List<object>? LoadImages()
@@ -71,7 +74,7 @@ public class PixelAgentApp
         {
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
 
-            if (Design == null)
+            if (WebDesign.Design == null)
             {
                 return;
             }
@@ -84,7 +87,7 @@ public class PixelAgentApp
             );
 
             Similarity = await _similarityService.Calculate(
-                Design,
+                WebDesign.Design,
                 renderedImage
             );
 

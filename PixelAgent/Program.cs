@@ -28,6 +28,7 @@ internal static class Program
         form.Controls.Add(webView);
 
         var webPage = new WebPage();
+        var webDesign = new WebDesign();
         var renderService = new RenderService(webView, webPage);
         var playwrightScreenshotService = new PlaywrightScreenshotService();
         var designService = new DesignImageService();
@@ -40,7 +41,8 @@ internal static class Program
             playwrightScreenshotService,
             exportService,
             similarityService,
-            webPage
+            webPage,
+            webDesign
         );
 
         var host = new WebViewHost(webView, app);
