@@ -203,10 +203,9 @@ function triggerOpenDesign() { postToHost("open_design_dialog"); }
 function triggerRunPipeline() { postToHost("run_pipeline"); }
 function triggerExport() { postToHost("export_app"); }
 function triggerLoadImages() { postToHost("load_images"); }
-function triggerDetectImages() { postToHost("detect_images"); }
-function triggerDetectTexts() { postToHost("detect_texts"); }
-function triggerDetectEdges() { postToHost("detect_edges"); }
-function triggerDetectElements() { postToHost("detect_elements"); }
+function triggerShowElements() { postToHost("show_elements"); }
+function triggerHideElements() { postToHost("hide_elements"); }
+
 function triggerColorBG() { postToHost("color_background"); }
 
 function notifyOpChange(opName, isEnabled) { postToHost("toggle_op", { opName, isEnabled }); }
