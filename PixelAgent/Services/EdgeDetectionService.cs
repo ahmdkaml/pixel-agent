@@ -67,6 +67,8 @@ public class EdgeDetectionService
             RetrievalModes.External,
             ContourApproximationModes.ApproxSimple);
 
+        var containerCount = 0;
+
         foreach (var contour in contours)
         {
             var area = Cv2.ContourArea(contour);
@@ -115,6 +117,7 @@ public class EdgeDetectionService
 
             detected.Add(new DetectedContainer
             {
+                Id = $"div_{++containerCount}",
                 X = rect.X,
                 Y = rect.Y,
                 Width = rect.Width,
