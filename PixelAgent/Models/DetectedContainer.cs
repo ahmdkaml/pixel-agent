@@ -1,8 +1,8 @@
 namespace PixelAgent.Models;
 
-public class DetectedImage
+public class DetectedContainer
 {
-    public string Name { get; set; } = "";
+    public string Id { get; set; } = "";
 
     public int X { get; set; }
     public int Y { get; set; }

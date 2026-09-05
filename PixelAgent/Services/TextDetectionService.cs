@@ -39,6 +39,7 @@ public class TextDetectionService
 
         iterator.Begin();
 
+        var textCount = 0;
         do
         {
             var text = iterator.GetText(
@@ -66,6 +67,7 @@ public class TextDetectionService
 
             detectedTexts.Add(new DetectedText
             {
+                Id = $"text_{++textCount}",
                 Text = text.Trim(),
 
                 X = bounds.X1,

@@ -2,6 +2,7 @@ namespace PixelAgent.Models;
 
 public class DetectedText
 {
+    public string Id { get; set; } = "";
     public string Text { get; set; } = "";
 
     public int X { get; set; }
@@ -17,4 +18,5 @@ public class DetectedText
     public int FontWeight { get; set; }
 
     public double FontSize { get; set; }
+
 }

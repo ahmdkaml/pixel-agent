@@ -33,6 +33,8 @@ public class ImageDetectionService
             return _detectedImages;
         }
 
+        var imageCount = 0;
+
         foreach (var image in images)
         {
             var asset = ReadImageAsset(image);
@@ -54,11 +56,13 @@ public class ImageDetectionService
             var detected = FindImage(
                 designMat,
                 imageMat,
-                asset.Name);
+                asset.Name,
+                imageCount);
 
             if (detected != null)
             {
                 _detectedImages.Add(detected);
+                imageCount++;
             }
             else
             {
@@ -77,7 +81,8 @@ public class ImageDetectionService
     private static DetectedImage? FindImage(
         Mat design,
         Mat image,
-        string name)
+        string name,
+        int imageCount)
     {
         using var designGray = new Mat();
         using var imageGray = new Mat();
@@ -161,6 +166,7 @@ public class ImageDetectionService
 
         return new DetectedImage
         {
+            Id = $"img_{++imageCount}",
             Name = name,
             X = bestLocation.X,
             Y = bestLocation.Y,
