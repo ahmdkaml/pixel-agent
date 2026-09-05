@@ -130,6 +130,12 @@ public class PixelAgentApp
 
         return _state.WebDesign.AnnotatedDesign;
     }
+
+    public string? getDesignImage()
+    {
+        return _state.WebDesign.Design;
+    }
+
     public async Task ColorBackground()
     {
         var backgroundColor =

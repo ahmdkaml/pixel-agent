@@ -46,6 +46,9 @@ public class WebViewHost
 
                     await _webView.CoreWebView2.ExecuteScriptAsync(script);
                 }
+                _app.DetectTexts();
+                _app.DetectEdges();
+
                 break;
 
             case "load_images":
@@ -56,24 +59,23 @@ public class WebViewHost
                 {
                     var script = $"window.addImages({JsonSerializer.Serialize(images)});";
                     await _webView.CoreWebView2.ExecuteScriptAsync(script);
+                    _app.DetectImages();
+
                 }
                 break;
 
-            case "detect_images":
-
-                _app.DetectImages();
-                break;
-            case "detect_texts":
-
-                _app.DetectTexts();
-                break;
-            case "detect_edges":
-
-                _app.DetectEdges();
-                break;
-
-            case "detect_elements":
+            case "show_elements":
                 var image = _app.DetectElements();
+
+                if (image != null)
+                {
+                    var script = $"window.setDesignImage({JsonSerializer.Serialize(image)});";
+                    await _webView.CoreWebView2.ExecuteScriptAsync(script);
+                }
+                break;
+
+            case "hide_elements":
+                image = _app.getDesignImage();
 
                 if (image != null)
                 {
