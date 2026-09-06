@@ -42,14 +42,21 @@ public class WebViewHost
 
                 if (imageData != null)
                 {
-                    var script = $"window.setDesignImage({JsonSerializer.Serialize(imageData)});";
-
-                    await _webView.CoreWebView2.ExecuteScriptAsync(script);
+                    await _webView.CoreWebView2.ExecuteScriptAsync(
+                        $"window.setDesignImage({JsonSerializer.Serialize(imageData)});");
                 }
+
                 _app.DetectTexts();
                 _app.DetectEdges();
+                _app.DetectImages();
+
+                var elements = _app.DetectElements();
+
+                await _webView.CoreWebView2.ExecuteScriptAsync(
+                    $"window.setDetectedElements({JsonSerializer.Serialize(elements)});");
 
                 break;
+
 
             case "load_images":
 
@@ -59,30 +66,9 @@ public class WebViewHost
                 {
                     var script = $"window.addImages({JsonSerializer.Serialize(images)});";
                     await _webView.CoreWebView2.ExecuteScriptAsync(script);
-                    _app.DetectImages();
-
                 }
                 break;
 
-            case "show_elements":
-                var image = _app.DetectElements();
-
-                if (image != null)
-                {
-                    var script = $"window.setDesignImage({JsonSerializer.Serialize(image)});";
-                    await _webView.CoreWebView2.ExecuteScriptAsync(script);
-                }
-                break;
-
-            case "hide_elements":
-                image = _app.getDesignImage();
-
-                if (image != null)
-                {
-                    var script = $"window.setDesignImage({JsonSerializer.Serialize(image)});";
-                    await _webView.CoreWebView2.ExecuteScriptAsync(script);
-                }
-                break;
 
             case "color_background":
                 await _app.ColorBackground();

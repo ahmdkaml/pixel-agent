@@ -120,15 +120,13 @@ public class PixelAgentApp
         _state.WebDesign.DetectedContainers = detected;
     }
 
-    public string? DetectElements()
+    public List<DetectedElement>? DetectElements()
     {
-        _state.WebDesign.AnnotatedDesign = _services.ElementDetection.Annotate(
-            _state.WebDesign.Design ?? string.Empty,
+        return _services.ElementDetection.Detect(
             _state.WebDesign.DetectedImages,
             _state.WebDesign.DetectedTexts,
             _state.WebDesign.DetectedContainers);
 
-        return _state.WebDesign.AnnotatedDesign;
     }
 
     public string? getDesignImage()

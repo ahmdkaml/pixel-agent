@@ -203,8 +203,6 @@ function triggerOpenDesign() { postToHost("open_design_dialog"); }
 function triggerRunPipeline() { postToHost("run_pipeline"); }
 function triggerExport() { postToHost("export_app"); }
 function triggerLoadImages() { postToHost("load_images"); }
-function triggerShowElements() { postToHost("show_elements"); }
-function triggerHideElements() { postToHost("hide_elements"); }
 
 function triggerColorBG() { postToHost("color_background"); }
 
@@ -281,6 +279,10 @@ window.addImages = function (images) {
   });
 
   document.getElementById("assetCount").innerText = loadedImages.size;
+};
+
+window.setDetectedElements = function (elements) {
+    console.log("Detected elements:", elements);
 };
 
 // 8. Layer Tree & Inspector Binding
