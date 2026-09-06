@@ -1,123 +1,129 @@
-using OpenCvSharp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using PixelAgent.Models;
 
 namespace PixelAgent.Services;
 
 public class ElementDetectionService
 {
-    private static readonly Scalar ImageColor =
-        new(255, 80, 160); // reddish pink
-
-    private static readonly Scalar TextColor =
-        new(0, 255, 255); // yellow
-
-    private static readonly Scalar ContainerColor =
-        new(255, 120, 0); // blue
-
-    public string? Annotate(
-        string design,
+    public List<DetectedElement> Detect(
         List<DetectedImage> images,
         List<DetectedText> texts,
         List<DetectedContainer> containers)
     {
-        if (string.IsNullOrWhiteSpace(design))
-        {
-            return null;
-        }
-
-        using var designMat = LoadImage(design);
-
-        if (designMat.Empty())
-        {
-            return null;
-        }
+        var elements = new List<DetectedElement>();
 
         foreach (var image in images)
         {
-            DrawBox(
-                designMat,
-                image.X,
-                image.Y,
-                image.Width,
-                image.Height,
-                ImageColor);
+            elements.Add(new DetectedElement
+            {
+                Id = image.Id,
+                Type = "image",
+                Name = image.Name,
+                X = image.X,
+                Y = image.Y,
+                Width = image.Width,
+                Height = image.Height
+            });
         }
 
         foreach (var text in texts)
         {
-            DrawBox(
-                designMat,
-                text.X,
-                text.Y,
-                text.Width,
-                text.Height,
-                TextColor);
+            elements.Add(new DetectedElement
+            {
+                Id = text.Id,
+                Type = "text",
+                Content = text.Text,
+                Color = text.Color,
+                FontSize = text.FontSize,
+                FontWeight = text.FontWeight,
+                X = text.X,
+                Y = text.Y,
+                Width = text.Width,
+                Height = text.Height
+            });
         }
+
         foreach (var container in containers)
         {
-            DrawBox(
-                designMat,
-                container.X,
-                container.Y,
-                container.Width,
-                container.Height,
-                ContainerColor);
-        }
-
-        return ConvertToDataUrl(designMat);
-    }
-
-    private static void DrawBox(
-        Mat image,
-        int x,
-        int y,
-        int width,
-        int height,
-        Scalar color)
-    {
-        Cv2.Rectangle(
-            image,
-            new Rect(x, y, width, height),
-            color,
-            3);
-    }
-
-    private static Mat LoadImage(string data)
-    {
-        var bytes = ExtractImageBytes(data);
-
-        return Cv2.ImDecode(
-            bytes,
-            ImreadModes.Color);
-    }
-
-    private static byte[] ExtractImageBytes(string data)
-    {
-        if (data.StartsWith(
-                "data:",
-                StringComparison.OrdinalIgnoreCase))
-        {
-            var commaIndex = data.IndexOf(',');
-
-            if (commaIndex < 0)
+            elements.Add(new DetectedElement
             {
-                throw new FormatException(
-                    "Invalid image data URL.");
-            }
-
-            data = data[(commaIndex + 1)..];
+                Id = container.Id,
+                Type = "container",
+                X = container.X,
+                Y = container.Y,
+                Width = container.Width,
+                Height = container.Height
+            });
         }
 
-        return Convert.FromBase64String(data);
+        return BuildHierarchyTree(elements);
     }
 
-    private static string ConvertToDataUrl(Mat image)
+    private static List<DetectedElement> BuildHierarchyTree(List<DetectedElement> elements)
     {
-        Cv2.ImEncode(
-            ".png",
-            image,
-            out var bytes);
+        var containers = elements.Where(e => e.Type == "container").ToList();
 
-        return $"data:image/png;base64,{Convert.ToBase64String(bytes)}";
+        foreach (var element in elements)
+        {
+            var parent = containers
+                .Where(c => c.Id != element.Id && IsInsideContainer(c, element))
+                .OrderBy(c => c.Width * c.Height)
+                .FirstOrDefault();
+
+            if (parent != null)
+            {
+                element.ParentId = parent.Id;
+                parent.ChildrenIds.Add(element.Id);
+
+                parent.Children ??= new List<DetectedElement>();
+                parent.Children.Add(element);
+            }
+        }
+
+        foreach (var container in containers.Where(c => c.Children != null))
+        {
+            container.Children = container.Children!
+                .OrderBy(c => c.Y)
+                .ThenBy(c => c.X)
+                .ToList();
+        }
+
+        return elements
+            .Where(e => e.ParentId == null)
+            .OrderBy(e => e.Y)
+            .ThenBy(e => e.X)
+            .ToList();
+    }
+
+    private static bool IsInsideContainer(DetectedElement container, DetectedElement child)
+    {
+        const int tolerance = 6;
+
+        bool withinTolerantBounds =
+            child.X >= container.X - tolerance &&
+            child.Y >= container.Y - tolerance &&
+            child.X + child.Width <= container.X + container.Width + tolerance &&
+            child.Y + child.Height <= container.Y + container.Height + tolerance;
+
+        if (withinTolerantBounds)
+        {
+            return true;
+        }
+
+        int overlapX1 = Math.Max(container.X, child.X);
+        int overlapY1 = Math.Max(container.Y, child.Y);
+        int overlapX2 = Math.Min(container.X + container.Width, child.X + child.Width);
+        int overlapY2 = Math.Min(container.Y + container.Height, child.Y + child.Height);
+
+        if (overlapX2 > overlapX1 && overlapY2 > overlapY1)
+        {
+            double overlapArea = (overlapX2 - overlapX1) * (overlapY2 - overlapY1);
+            double childArea = child.Width * child.Height;
+            return (overlapArea / childArea) >= 0.70;
+        }
+
+        return false;
     }
 }
